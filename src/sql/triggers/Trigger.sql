@@ -1,4 +1,4 @@
--- -- Trigger 1: Actualizar la Clasificación de Pilotos (Drivers)
+-- Trigger 1: Actualizar la Clasificación de Pilotos (Drivers)
 
 -- Descripción: Este trigger se ejecuta automáticamente después de insertar un nuevo resultado en la tabla results. Su propósito 
 -- es actualizar la tabla drivers sumando los puntos obtenidos en la nueva carrera al total de puntos del piloto correspondiente.
@@ -13,15 +13,11 @@ BEGIN
     UPDATE drivers
     SET points = points + NEW.points
     WHERE driverId = NEW.driverId;
-END;
+END//
 
 DELIMITER ;
+
 -- Automatiza la actualización de la clasificación de los pilotos cada vez que se inserta un nuevo resultado, manteniendo los puntos siempre actualizados sin intervención manual.
-
---
---
---
-
 
 -- Trigger 2: Mantener el Log de Resultados (Results Log)
 
@@ -54,5 +50,3 @@ BEGIN
 END//
 
 DELIMITER ;
---  Mantiene un registro detallado de todas las modificaciones en los resultados para auditoría, análisis histórico y recuperación en caso de errores.
-

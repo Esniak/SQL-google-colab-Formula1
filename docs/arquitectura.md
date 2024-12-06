@@ -68,15 +68,51 @@ Proyecto_Formula1/
    - Ejecutar `setup.sh` para configurar dependencias en macOS.
    - Crear un archivo `.env` para las credenciales de base de datos.
 
+
 2. **Carga y Análisis de Datos:**
    - Cargar datos desde archivos CSV en `data/raw/` hacia la base de datos.
+
+     - Conectar Google Colab a MySQL Workbench utilizando la biblioteca `mysql-connector-python`:
+
+       ```python
+       import mysql.connector
+       from dotenv import load_dotenv
+       import os
+
+       # Cargar las variables de entorno desde el archivo .env
+       load_dotenv()
+
+       # Configuración de la conexión
+       config = {
+           'user': os.getenv('DB_USER'),
+           'password': os.getenv('DB_PASSWORD'),
+           'host': os.getenv('DB_HOST'),
+           'database': os.getenv('DB_NAME')
+       }
+
+       # Establecer la conexión
+       conn = mysql.connector.connect(**config)
+       cursor = conn.cursor()
+
+       # Ejemplo de consulta
+       query = "SELECT * FROM nombre_tabla"
+       cursor.execute(query)
+
+       # Obtener resultados
+       results = cursor.fetchall()
+       for row in results:
+           print(row)
+
+       # Cerrar la conexión
+       cursor.close()
+       conn.close()
+       ```
+
+     - Asegurarse de que MySQL Workbench esté configurado para aceptar conexiones remotas si se está ejecutando en una máquina diferente a Google Colab.
+
    - Utilizar el notebook `análisis_datos.ipynb` para consultas y visualizaciones.
 
 3. **Pruebas:**
    - Ejecutar pruebas SQL en `tests/sql_tests/`.
    - Validar scripts Python con `tests/python_tests/`.
 
-## Futuras Extensiones
-- Añadir análisis predictivo basado en datos históricos.
-- Integrar un dashboard interactivo para visualización avanzada.
-- Optimizar consultas SQL para manejar grandes volúmenes de datos.

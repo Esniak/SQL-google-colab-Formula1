@@ -14,22 +14,30 @@ CREATE PROCEDURE update_driver_info(
 BEGIN
     -- Actualizar la nacionalidad si se proporciona un nuevo valor
     IF pNewNationality IS NOT NULL THEN
-        UPDATE drivers SET nationality = pNewNationality WHERE driverId = pDriverId;
+        UPDATE drivers 
+        SET nationality = pNewNationality 
+        WHERE driverId = pDriverId;
     END IF;
 
     -- Actualizar el número si se proporciona un nuevo valor
     IF pNewNumber IS NOT NULL THEN
-        UPDATE drivers SET number = pNewNumber WHERE driverId = pDriverId;
+        UPDATE drivers 
+        SET number = pNewNumber 
+        WHERE driverId = pDriverId;
     END IF;
 
     -- Actualizar el nombre si se proporciona un nuevo valor
     IF pNewForename IS NOT NULL THEN
-        UPDATE drivers SET forename = pNewForename WHERE driverId = pDriverId;
+        UPDATE drivers 
+        SET forename = pNewForename 
+        WHERE driverId = pDriverId;
     END IF;
 
     -- Actualizar el apellido si se proporciona un nuevo valor
     IF pNewSurname IS NOT NULL THEN
-        UPDATE drivers SET surname = pNewSurname WHERE driverId = pDriverId;
+        UPDATE drivers 
+        SET surname = pNewSurname 
+        WHERE driverId = pDriverId;
     END IF;
 END //
 
@@ -51,17 +59,3 @@ CALL update_driver_info(123, NULL, NULL, NULL, 'Boutsen');
 
 -- Actualizar todos los campos del conductor con ID 123: nacionalidad, número, nombre y apellido
 CALL update_driver_info(123, 'Belgian', 123, 'Thierry', 'Boutsen');
-
-
-
-
-
-
-
-
-
-
-
-
-
-

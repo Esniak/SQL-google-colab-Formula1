@@ -117,7 +117,7 @@ Proyecto_Formula1/
 
      - Asegurarse de que MySQL Workbench esté configurado para aceptar conexiones remotas si se está ejecutando en una máquina diferente a Google Colab.
 
-   - Utilizar el notebook `análisis_datos.ipynb` para consultas y visualizaciones.
+   - Utilizar el notebook `MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb` para consultas y visualizaciones.
 
 3. **Pruebas:**
    - Ejecutar pruebas SQL en `tests/sql_tests/`.

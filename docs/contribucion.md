@@ -93,4 +93,4 @@ Si encuentras un problema, abre un [Issue](https://github.com/<usuario>/<reposit
 
 ## Código de Conducta
 
-Todos los contribuidores deben adherirse a nuestro [Código de Conducta](https://github.com/<usuario>/<repositorio>/CODE_OF_CONDUCT.md).
+Todos los contribuidores deben adherirse a una conducta profsionalmente etica y moral. 

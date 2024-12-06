@@ -1,0 +1,15 @@
+# Dependencias del proyecto Fórmula 1
+
+mysql-connector-python==8.0.33  # Conexión a MySQL
+
+python-dotenv==1.0.0           # Manejo de variables de entorno
+
+pandas==1.5.3                  # Manipulación y análisis de datos
+
+pytest==7.4.0                  # Ejecución de pruebas
+
+matplotlib==3.7.1              # Visualización de datos
+
+seaborn==0.12.2                # Gráficos avanzados y estilizados
+
+jupyter==1.0.0                 # Para ejecutar notebooks

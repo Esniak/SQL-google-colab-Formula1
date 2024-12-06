@@ -1,0 +1,11 @@
+# Configuración del Proyecto Fórmula 1
+
+database:
+  host: ${DB_HOST}      # Host de la base de datos
+  user: ${DB_USER}      # Usuario de la base de datos
+  password: ${DB_PASSWORD}  # Contraseña de la base de datos
+  name: ${DB_NAME}      # Nombre de la base de datos
+
+logging:
+  level: INFO               # Nivel de logs (INFO, DEBUG, ERROR)
+  file: logs/app.log        # Ruta del archivo de logs

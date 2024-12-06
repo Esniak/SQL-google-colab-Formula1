@@ -1,4 +1,3 @@
-
 # Arquitectura del Proyecto Fórmula 1
 
 ## Descripción General
@@ -116,3 +115,7 @@ Proyecto_Formula1/
    - Ejecutar pruebas SQL en `tests/sql_tests/`.
    - Validar scripts Python con `tests/python_tests/`.
 
+## Futuras Extensiones
+- Añadir análisis predictivo basado en datos históricos.
+- Integrar un dashboard interactivo para visualización avanzada.
+- Optimizar consultas SQL para manejar grandes volúmenes de datos.

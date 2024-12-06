@@ -65,8 +65,16 @@ Proyecto_Formula1/
 
 1. **Configuración del Entorno:**
    - Ejecutar `setup.sh` para configurar dependencias en macOS.
-   - Crear un archivo `.env` para las credenciales de base de datos.
+   - Crear un archivo `.env` para las credenciales de base de datos. 
+   - Este archivo `.env.example` actúa como una plantilla para la configuración de variables de entorno de la base de datos. Para utilizarlo, copia este archivo y renómbralo a `.env`. Luego, reemplaza cada valor de las variables con la información específica de tu entorno de base de datos.
+   
+   -->
+   # Ejemplo de archivo `.env.example`:
 
+   DB_HOST=tu-host-aqui
+   DB_USER=tu-usuario-aqui
+   DB_PASS=tu-contraseña-aqui
+   DB_NAME=tu-base-de-datos-aqui
 
 2. **Carga y Análisis de Datos:**
    - Cargar datos desde archivos CSV en `data/raw/` hacia la base de datos.

@@ -1,4 +1,3 @@
-
 # Uso del Proyecto Fórmula 1
 
 ## Introducción

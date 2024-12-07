@@ -1,11 +1,4 @@
-ALTER TABLE results DROP FOREIGN KEY fk_results_users;
 
-SHOW CREATE TABLE results_log;
-ALTER TABLE results_log DROP FOREIGN KEY fk_results_log_users;
-
-SHOW CREATE TABLE results;
-
--- Vamos a crear una tabla llamada users que contendrá los usuarios ficticios con sus roles y contraseñas.
 
 -- Asegúrate de estar utilizando la base de datos Formula1DB
 USE Formula1DB;

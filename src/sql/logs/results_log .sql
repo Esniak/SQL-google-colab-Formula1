@@ -1,5 +1,11 @@
 --  Esta tabla se crea para registrar los resultados de las carreras, almacenando la driverId, raceId, position, 
 -- y un action_time que indica cuándo se registró el resultado.
+-- Asegúrate de estar utilizando la base de datos Formula1DB
+USE Formula1DB;
+
+-- Eliminar la tabla
+DROP TABLE IF EXISTS results_log ;
+
 
 CREATE TABLE IF NOT EXISTS results_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,

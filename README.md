@@ -12,6 +12,319 @@ El proyecto incluye la gestión de usuarios y permisos, la implementación de tr
 
 Este proyecto tiene como objetivo principal desarrollar una base de datos MySQL para almacenar y analizar datos históricos de la Fórmula 1. La base de datos está diseñada para integrarse con Google Colab, permitiendo realizar consultas avanzadas y generar visualizaciones informativas. La estructura del proyecto es modular y escalable, optimizada para entornos empresariales y colaboración en equipos.
 
+## Tablas del Proyecto
+
+### circuits
+```sql
+CREATE TABLE circuits (
+    circuitId int AUTO_INCREMENT NOT NULL,
+    circuitRef varchar(50) NOT NULL,
+    name varchar(100) NOT NULL,
+    location varchar(50) NOT NULL,
+    country varchar(50) NOT NULL,
+    lat float NOT NULL,
+    lng float NOT NULL,
+    alt int NULL,
+    url varchar(255) NOT NULL,
+    PRIMARY KEY (`circuitId`)
+);
+```
+- Filas insertadas: 73
+
+### constructors
+```sql
+CREATE TABLE constructors (
+    constructorId int AUTO_INCREMENT NOT NULL,
+    constructorRef varchar(50) NOT NULL,
+    name varchar(100) NOT NULL,
+    nationality varchar(50) NOT NULL,
+    url varchar(255) NOT NULL,
+    PRIMARY KEY (`constructorId`)
+);
+```
+- Filas insertadas: 208
+
+### drivers
+```sql
+CREATE TABLE drivers (
+    driverId int AUTO_INCREMENT NOT NULL,
+    driverRef varchar(50) NOT NULL,
+    number int NULL,
+    code varchar(3) NULL,
+    forename varchar(50) NOT NULL,
+    surname varchar(50) NOT NULL,
+    dob date NOT NULL,
+    nationality varchar(50) NOT NULL,
+    url varchar(255) NOT NULL,
+    PRIMARY KEY (`driverId`)
+);
+```
+- Filas insertadas: 842
+
+### races
+```sql
+CREATE TABLE races (
+    raceId int AUTO_INCREMENT NOT NULL,
+    year int NOT NULL,
+    round int NOT NULL,
+    circuitId int NOT NULL,
+    name varchar(255) NOT NULL,
+    date date NOT NULL,
+    time time NULL,
+    url varchar(255) NOT NULL,
+    PRIMARY KEY (`raceId`),
+    FOREIGN KEY (`circuitId`) REFERENCES `circuits`(`circuitId`)
+);
+```
+- Filas insertadas: 997
+
+### results
+```sql
+CREATE TABLE results (
+    resultId int AUTO_INCREMENT NOT NULL,
+    raceId int NOT NULL,
+    driverId int NOT NULL,
+    constructorId int NOT NULL,
+    number int NOT NULL,
+    grid int NOT NULL,
+    position int NULL,
+    positionText varchar(10) NOT NULL,
+    positionOrder int NOT NULL,
+    points float NOT NULL,
+    laps int NOT NULL,
+    time varchar(255) NULL,
+    milliseconds int NULL,
+    fastestLap int NULL,
+    rank int NULL,
+    fastestLapTime varchar(255) NULL,
+    fastestLapSpeed float NULL,
+    statusId int NOT NULL,
+    PRIMARY KEY (`resultId`),
+    FOREIGN KEY (`raceId`) REFERENCES `races`(`raceId`),
+    FOREIGN KEY (`driverId`) REFERENCES `drivers`(`driverId`),
+    FOREIGN KEY (`constructorId`) REFERENCES `constructors`(`constructorId`)
+);
+```
+- Filas insertadas: 23,727
+
+### results_log
+```sql
+CREATE TABLE results_log (
+    logId int AUTO_INCREMENT NOT NULL,
+    resultId int NOT NULL,
+    operation varchar(10) NOT NULL,
+    timestamp datetime NOT NULL,
+    old_data text NULL,
+    new_data text NULL,
+    PRIMARY KEY (`logId`),
+    FOREIGN KEY (`resultId`) REFERENCES `results`(`resultId`)
+);
+```
+- Filas insertadas: 4
+
+### users
+```sql
+CREATE TABLE users (
+    user_id int AUTO_INCREMENT PRIMARY KEY,
+    username varchar(50) UNIQUE NOT NULL,
+    password varchar(255) NOT NULL,
+    role enum('manager', 'employee', 'analyst') NOT NULL
+);
+```
+- Filas insertadas: 3
+
+## Gestión de Usuarios y Permisos
+
+### Usuarios
+- `manager_user`: Permisos completos.
+- `employee_user`: Permisos de inserción.
+- `analyst_user`: Permisos de inserción y creación de tablas temporales.
+
+## Triggers y Procedimientos Almacenados
+
+### Triggers
+- **actualizar_clasificacion**: Actualiza automáticamente la clasificación de los pilotos.
+```sql
+DELIMITER //
+
+CREATE TRIGGER actualizar_clasificacion
+AFTER INSERT ON results
+FOR EACH ROW
+BEGIN
+    UPDATE drivers
+    SET points = points + NEW.points
+    WHERE driverId = NEW.driverId;
+END//
+
+DELIMITER ;
+```
+
+- **log_insert, log_update, log_delete**: Registra operaciones en la tabla `results_log`.
+```sql
+DELIMITER //
+
+CREATE TRIGGER log_insert
+AFTER INSERT ON results
+FOR EACH ROW
+BEGIN
+    INSERT INTO results_log (operation, timestamp, result_id, new_data)
+    VALUES ('INSERT', NOW(), NEW.resultId, NEW.points);
+END//
+
+CREATE TRIGGER log_update
+AFTER UPDATE ON results
+FOR EACH ROW
+BEGIN
+    INSERT INTO results_log (operation, timestamp, result_id, old_data, new_data)
+    VALUES ('UPDATE', NOW(), OLD.resultId, OLD.points, NEW.points);
+END//
+
+CREATE TRIGGER log_delete
+AFTER DELETE ON results
+FOR EACH ROW
+BEGIN
+    INSERT INTO results_log (operation, timestamp, result_id, old_data)
+    VALUES ('DELETE', NOW(), OLD.resultId, OLD.points);
+END//
+
+DELIMITER ;
+```
+
+### Procedimientos Almacenados
+- **update_driver_info**: Actualiza la información de los pilotos.
+```sql
+DROP PROCEDURE IF EXISTS update_driver_info;
+
+DELIMITER //
+
+CREATE PROCEDURE update_driver_info(
+    IN pDriverId INT,
+    IN pNewNationality VARCHAR(255),
+    IN pNewNumber INT,
+    IN pNewForename VARCHAR(255),
+    IN pNewSurname VARCHAR(255)
+)
+BEGIN
+    IF pNewNationality IS NOT NULL THEN
+        UPDATE drivers 
+        SET nationality = pNewNationality 
+        WHERE driverId = pDriverId;
+    END IF;
+
+    IF pNewNumber IS NOT NULL THEN
+        UPDATE drivers 
+        SET number = pNewNumber 
+        WHERE driverId = pDriverId;
+    END IF;
+
+    IF pNewForename IS NOT NULL THEN
+        UPDATE drivers 
+        SET forename = pNewForename 
+        WHERE driverId = pDriverId;
+    END IF;
+
+    IF pNewSurname IS NOT NULL THEN
+        UPDATE drivers 
+        SET surname = pNewSurname 
+        WHERE driverId = pDriverId;
+    END IF;
+END//
+
+DELIMITER ;
+```
+
+## Funciones SQL
+
+### average_points_per_driverid
+```sql
+USE Formula1DB;
+DROP FUNCTION IF EXISTS average_points;
+
+DELIMITER //
+
+CREATE FUNCTION average_points(p_driverId INT)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    DECLARE avg_points DECIMAL(10,2);
+    
+    SELECT AVG(points) INTO avg_points
+    FROM results
+    WHERE driverId = p_driverId;
+    
+    RETURN avg_points;
+END //
+
+DELIMITER ;
+```
+
+### Ejemplos Prácticos
+```sql
+SELECT driverId, average_points(driverId) AS avg_points
+FROM drivers
+WHERE driverId = 1;
+
+SELECT driverId, average_points(driverId)
+FROM drivers
+LIMIT 10;
+
+SELECT driverId, average_points(driverId)
+FROM drivers
+WHERE driverId IN (1, 12, 39, 48, 127);
+
+SELECT driverId, average_points(driverId)
+FROM drivers
+WHERE nationality = 'British'
+LIMIT 10;
+
+SELECT driverId, average_points(driverId) AS avg_points
+FROM drivers
+ORDER BY avg_points DESC
+LIMIT 10;
+```
+
+## Diagrama de Entidad-Relación (ERD)
+
+El diagrama ER muestra las relaciones entre las tablas de la base de datos. Incluye las tablas `circuits`, `constructors`, `drivers`, `races`, `results`, `results_log`, y `users`.
+
+## Conexión a la Base de Datos MySQL desde Google Colab
+
+Para conectar Google Colab a la base de datos MySQL, se utiliza la biblioteca `mysql-connector-python`.
+
+```python
+import mysql.connector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+config = {
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'host': os.getenv('DB_HOST'),
+    'database': os.getenv('DB_NAME')
+}
+
+conn = mysql.connector.connect(**config)
+cursor = conn.cursor()
+
+query = "SELECT * FROM nombre_tabla"
+cursor.execute(query)
+
+results = cursor.fetchall()
+for row in results:
+    print(row)
+
+cursor.close()
+conn.close()
+```
+
+## Resumen del Proyecto
+
+- Diseño y creación de la base de datos MySQL.
+- Integración con Google Colab para análisis y visualización.
+- Principales hallazgos identificados durante el análisis.
+
 ## Instrucciones para Configurar y Ejecutar el Proyecto Localmente
 
 ### Requisitos Previos

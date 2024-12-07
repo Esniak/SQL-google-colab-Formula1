@@ -416,3 +416,72 @@ Todos los contribuidores deben adherirse a una conducta profesionalmente ética 
 - Añadir análisis predictivo basado en datos históricos.
 - Integrar un dashboard interactivo para visualización avanzada.
 - Optimizar consultas SQL para manejar grandes volúmenes de datos.
+
+## Creación y Población de Tablas en MySQL
+
+### 1. Tablas Creadas:
+
+- `circuits`
+- `constructors`
+- `drivers`
+- `races`
+- `results`
+- `results_log`
+- `users`
+
+### 2. Valores Insertados:
+
+- `circuits`: 73 registros.
+- `constructors`: 208 registros.
+- `drivers`: 842 registros.
+- `races`: 997 registros.
+- `results`: 23,727 registros.
+- `results_log`: 4 registros.
+- `users`: 3 registros.
+
+### 3. Estructura de las Tablas:
+
+Incluir el código SQL de las estructuras de cada tabla en formato diferenciado, como por ejemplo:
+
+```sql
+CREATE TABLE circuits (
+   circuitId int AUTO_INCREMENT NOT NULL,
+   circuitRef varchar(50) NOT NULL,
+   name varchar(100) NOT NULL,
+   location varchar(50) NOT NULL,
+   country varchar(50) NOT NULL,
+   lat float NOT NULL,
+   lng float NOT NULL,
+   alt int NULL,
+   url varchar(255) NOT NULL,
+   PRIMARY KEY (circuitId)
+);
+```
+
+Detallar las estructuras de todas las tablas: `circuits`, `constructors`, `drivers`, `races`, `results`, `results_log`, `users`.
+
+Este apartado debe estar estructurado claramente en el `README.md`, utilizando secciones y código SQL formateado para garantizar la comprensión del contenido técnico. Esto permitirá al lector entender cómo se diseñaron las tablas y qué datos iniciales se cargaron en ellas.
+
+```sql
+CREATE TABLE results (
+   resultId int AUTO_INCREMENT NOT NULL,
+   raceId int NOT NULL,
+   driverId int NOT NULL,
+   constructorId int NOT NULL,
+   number int NOT NULL,
+   grid int NOT NULL,
+   position int NULL,
+   positionText varchar(10) NOT NULL,
+   positionOrder int NOT NULL,
+   points float NOT NULL,
+   laps int NOT NULL,
+   time varchar(255) NULL,
+   milliseconds int NULL,
+   fastestLap int NULL,
+   rank int NULL,
+   fastestLapTime varchar(255) NULL,
+   fastestLapSpeed float NULL,
+   statusId int NOT NULL,
+   PRIMARY KEY (resultId)
+);
+```

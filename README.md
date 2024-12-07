@@ -1,8 +1,6 @@
 # Proyecto Fórmula 1
 
-![eer readme github formula1](https://github.com/user-attachments/assets/c90f9e0f-ff6a-452f-a85c-3478a69b0a61)
-
-## Resumen del Proyecto
+![eer readme github formula1](https://github.com/user-attachments/assets/c90f9e0f-ff6a-452f-a85c-3478a69b0a61)## Resumen del Proyecto
 
 ### 1. Diseño y Creación - Base de Datos MySQL
 - Descripción del diseño y estructuración de una base de datos MySQL optimizada para almacenar y gestionar eficientemente la información necesaria para el análisis.

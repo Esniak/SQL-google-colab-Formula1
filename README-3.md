@@ -71,7 +71,7 @@ Los archivos de datos se encuentran en la carpeta `data/raw/` y están en format
 
 ### 1. Diseño y Creación - Base de Datos MySQL
 - Descripción del diseño y estructuración de una base de datos MySQL optimizada para almacenar y gestionar eficientemente la información necesaria para el análisis.
-- 
+  
 ## Tablas del Proyecto
 
 ### circuits
@@ -482,7 +482,9 @@ plt.show()
 
 En el notebook `MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb`, se han generado gráficos y visualizaciones clave para identificar patrones y tendencias en los datos de la Fórmula 1. Estas visualizaciones ayudan a comprender mejor los factores que influyen en el rendimiento de los pilotos y los equipos.
 
-Link del Notebook:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/notebooks/MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb
+Link del Notebook: https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/notebooks/MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb
+
+A continuación, se muestran algunas de las visualizaciones destacadas:
 
 ![numero drivers nacionalidades](https://drive.google.com/uc?export=view&id=1p7BYtj12d8kxQv5HctXdkLM4HO99YnWO)
 
@@ -490,8 +492,10 @@ Link del Notebook:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/
 
 ![Correlacion](https://drive.google.com/uc?export=view&id=1ptWdCI0b2sjTqGG5LT32ze12B41S7qRN)
 
-A continuación, se muestran algunas de las visualizaciones destacadas:
 
+## Consideraciones Finales
+
+Este proyecto resalta cómo la combinación de herramientas como MySQL y Google Colab puede proporcionar insights profundos, demostrando su utilidad para investigaciones futuras y aplicaciones en otros dominios. La estructura modular y escalable del proyecto permite su adaptación a diferentes contextos y necesidades, facilitando la colaboración en equipos y la integración en entornos empresariales.
 
 ## Instrucciones para Configurar y Ejecutar el Proyecto Localmente
 
@@ -513,18 +517,15 @@ A continuación, se muestran algunas de las visualizaciones destacadas:
    git clone https://github.com/Esniak/SQL-google-colab-Formula1.git
    cd Proyecto_Formula1
    ```
-
 2. **Crea un Entorno Virtual**:
    ```bash
    python3 -m venv venv
    source venv/bin/activate  # macOS/Linux
    ```
-
 3. **Instala las Dependencias**:
    ```bash
    pip install -r requirements.txt
    ```
-
 4. **Configura las Credenciales**:
    - Crea un archivo `.env` en la raíz del proyecto:
      ```env
@@ -547,45 +548,17 @@ A continuación, se muestran algunas de las visualizaciones destacadas:
    ```bash
    python src/main.py
    ```
-
+   
 2. **Análisis de Datos**:
    - Abre el notebook `notebooks/análisis_datos.ipynb` en Google Colab para realizar consultas y visualizaciones.
-
+     
 3. **Pruebas**:
    - Ejecuta las pruebas SQL y Python:
      ```bash
      pytest tests/
      ```
 
-## Explicación de los Archivos de Datos en el Repositorio
-
-Los archivos de datos se encuentran en la carpeta `data/raw/` y están en formato CSV. Estos archivos contienen información histórica de la Fórmula 1, incluyendo circuitos, constructores, conductores, carreras y resultados.
-
-- **circuits.csv**: Contiene información sobre los circuitos de carreras.
-- **constructors.csv**: Contiene información sobre los constructores de los vehículos.
-- **drivers.csv**: Contiene información sobre los conductores.
-- **races.csv**: Contiene información sobre las carreras.
-- **results.csv**: Contiene información sobre los resultados de las carreras.
-
-## Detalles sobre los Scripts Principales y sus Funcionalidades
-
-### 1. Base de Datos MySQL
-- **Esquema**: El esquema incluye tablas relacionadas con circuitos, conductores, carreras, resultados y usuarios.
-- **Triggers**: Automatizan operaciones como la actualización de puntos de los pilotos.
-- **Procedimientos Almacenados**: Incluyen funciones como `update_driver_info` para actualizar datos de los pilotos.
-- **Funciones SQL**: Ejemplo: `average_points_per_driverid` para calcular promedios de puntos.
-
-### 2. Scripts y Notebooks
-- **`main.py`**: Lógica principal del proyecto, incluyendo conexión a la base de datos y carga de datos.
-- **Notebook**: Permite análisis y visualización en Google Colab con gráficos generados a partir de datos SQL.
-
-### 3. Seguridad y Configuración
-- **`config.yaml`**: Maneja configuraciones, sin incluir credenciales sensibles.
-- **Archivo `.env`**: Almacena credenciales de forma segura, excluido del repositorio público con `.gitignore`.
-
 ## Pautas para Contribuir al Proyecto
-
-### Introducción
 
 Gracias por tu interés en contribuir a este proyecto. Este documento describe cómo puedes participar en su desarrollo, reportar problemas y proponer mejoras.
 
@@ -679,70 +652,6 @@ Si encuentras un problema, abre un [Issue](https://github.com/<usuario>/<reposit
 ### Código de Conducta
 
 Todos los contribuidores deben adherirse a una conducta profesionalmente ética y moral.
-
-## Información Adicional
-
-### Flujo de Trabajo
-
-1. **Configuración del Entorno**:
-   - Ejecutar `setup.sh` para configurar dependencias en macOS.
-   - Crear un archivo `.env` para las credenciales de base de datos. 
-   - Este archivo `.env.example` actúa como una plantilla para la configuración de variables de entorno de la base de datos. Para utilizarlo, copia este archivo y renómbralo a `.env`. Luego, reemplaza cada valor de las variables con la información específica de tu entorno de base de datos.
-   
-   -->
-   # Ejemplo de archivo `.env.example`:
-
-   DB_HOST=tu-host-aqui
-   DB_USER=tu-usuario-aqui
-   DB_PASS=tu-contraseña-aqui
-   DB_NAME=tu-base-de-datos-aqui
-
-2. **Carga y Análisis de Datos**:
-   - Cargar datos desde archivos CSV en `data/raw/` hacia la base de datos.
-
-     - Conectar Google Colab a MySQL Workbench utilizando la biblioteca `mysql-connector-python`:
-
-       ```python
-       import mysql.connector
-       from dotenv import load_dotenv
-       import os
-
-       # Cargar las variables de entorno desde el archivo .env
-       load_dotenv()
-
-       # Configuración de la conexión
-       config = {
-           'user': os.getenv('DB_USER'),
-           'password': os.getenv('DB_PASSWORD'),
-           'host': os.getenv('DB_HOST'),
-           'database': os.getenv('DB_NAME')
-       }
-
-       # Establecer la conexión
-       conn = mysql.connector.connect(**config)
-       cursor = conn.cursor()
-
-       # Ejemplo de consulta
-       query = "SELECT * FROM nombre_tabla"
-       cursor.execute(query)
-
-       # Obtener resultados
-       results = cursor.fetchall()
-       for row in results:
-           print(row)
-
-       # Cerrar la conexión
-       cursor.close()
-       conn.close()
-       ```
-
-     - Asegurarse de que MySQL Workbench esté configurado para aceptar conexiones remotas si se está ejecutando en una máquina diferente a Google Colab.
-
-   - Utilizar el notebook `MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb` para consultas y visualizaciones.
-
-3. **Pruebas**:
-   - Ejecutar pruebas SQL en `tests/sql_tests/`.
-   - Validar scripts Python con `tests/python_tests/`.
 
 ## Futuras Extensiones
 

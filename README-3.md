@@ -482,8 +482,6 @@ plt.show()
 
 En el notebook `MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb`, se han generado gráficos y visualizaciones clave para identificar patrones y tendencias en los datos de la Fórmula 1. Estas visualizaciones ayudan a comprender mejor los factores que influyen en el rendimiento de los pilotos y los equipos.
 
-Link del Notebook: https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/notebooks/MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb
-
 A continuación, se muestran algunas de las visualizaciones destacadas:
 
 ![numero drivers nacionalidades](https://drive.google.com/uc?export=view&id=1p7BYtj12d8kxQv5HctXdkLM4HO99YnWO)
@@ -492,6 +490,7 @@ A continuación, se muestran algunas de las visualizaciones destacadas:
 
 ![Correlacion](https://drive.google.com/uc?export=view&id=1ptWdCI0b2sjTqGG5LT32ze12B41S7qRN)
 
+Link del Notebook: https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/notebooks/MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb
 
 ## Consideraciones Finales
 

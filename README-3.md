@@ -3,6 +3,72 @@
 
 ![Descripción de la imagen](https://drive.google.com/uc?export=view&id=1vsStXdwZCNa4WJsrm3-ifOIvt0Q99Oj2)
 
+
+## Estructura del Proyecto
+
+```
+Proyecto_Formula1/
+├── README.md               # Introducción al proyecto
+├── LICENSE                 # Licencia del proyecto
+├── src/
+│   ├── config/
+│   │   └── config.yaml      # Configuración segura del entorno
+│   ├── sql/                 # Scripts SQL
+│   │   ├── schema/          # Definición del esquema de la base de datos
+│   │   ├── procedures/      # Procedimientos almacenados
+│   │   ├── triggers/        # Triggers definidos
+│   │   ├── functions/       # Funciones SQL
+│   │   ├── logs/            # Registro de cambios y operaciones
+│   │   └── users/           # Gestión de usuarios
+│   └── main.py              # Script principal del proyecto
+├── notebooks/
+│   └── análisis_datos.ipynb # Notebook para análisis y visualización
+├── tests/
+│   ├── sql_tests/           # Pruebas para consultas SQL
+│   └── python_tests/        # Pruebas unitarias para scripts Python
+├── docs/
+│   ├── arquitectura.md      # Documentación de la arquitectura del proyecto
+│   ├── uso.md               # Instrucciones de uso del proyecto
+│   └── contribución.md      # Guía para contribuidores
+├── scripts/
+│   ├── setup.sh             # Script de configuración del entorno
+│   └── deploy.sh            # Script de despliegue
+├── data/
+│   ├── raw/                 # Datos originales en formato CSV
+│   │   ├── Circuits.csv
+│   │   ├── Constructors.csv
+│   │   ├── Drivers.csv
+│   │   ├── Races.csv
+│   │   ├── Results.csv
+└── .gitignore               # Exclusiones para el repositorio Git
+```
+
+## Explicación de los Archivos de Datos en el Repositorio
+
+Los archivos de datos se encuentran en la carpeta `data/raw/` y están en formato CSV. Estos archivos contienen información histórica de la Fórmula 1, incluyendo circuitos, constructores, conductores, carreras y resultados.
+
+- **circuits.csv**: Contiene información sobre los circuitos de carreras.
+- **constructors.csv**: Contiene información sobre los constructores de los vehículos.
+- **drivers.csv**: Contiene información sobre los conductores.
+- **races.csv**: Contiene información sobre las carreras.
+- **results.csv**: Contiene información sobre los resultados de las carreras.
+
+## Detalles sobre los Scripts Principales y sus Funcionalidades
+
+### 1. Base de Datos MySQL
+- **Esquema**: El esquema incluye tablas relacionadas con circuitos, conductores, carreras, resultados y usuarios.
+- **Triggers**: Automatizan operaciones como la actualización de puntos de los pilotos.
+- **Procedimientos Almacenados**: Incluyen funciones como `update_driver_info` para actualizar datos de los pilotos.
+- **Funciones SQL**: Ejemplo: `average_points_per_driverid` para calcular promedios de puntos.
+
+### 2. Scripts y Notebooks
+- **`main.py`**: Lógica principal del proyecto, incluyendo conexión a la base de datos y carga de datos.
+- **Notebook**: Permite análisis y visualización en Google Colab con gráficos generados a partir de datos SQL.
+
+### 3. Seguridad y Configuración
+- **`config.yaml`**: Maneja configuraciones, sin incluir credenciales sensibles.
+- **Archivo `.env`**: Almacena credenciales de forma segura, excluido del repositorio público con `.gitignore`.
+
 ### 1. Diseño y Creación - Base de Datos MySQL
 - Descripción del diseño y estructuración de una base de datos MySQL optimizada para almacenar y gestionar eficientemente la información necesaria para el análisis.
 - 
@@ -135,17 +201,20 @@ El diagrama ER muestra las relaciones entre las tablas de la base de datos. Incl
 
 ## Gestión de Usuarios y Permisos
 
+La gestión de usuarios y permisos es fundamental para garantizar la seguridad y el control de acceso en la base de datos. En este proyecto, se han definido tres tipos de usuarios con diferentes niveles de permisos:
+
 ### Usuarios
-- `manager_user`: Permisos completos.
-- `employee_user`: Permisos de inserción.
-- `analyst_user`: Permisos de inserción y creación de tablas temporales.
+- `manager_user`: Tiene permisos completos para realizar cualquier operación en la base de datos.
+- `employee_user`: Tiene permisos limitados para insertar datos en la base de datos.
+- `analyst_user`: Tiene permisos para insertar datos y crear tablas temporales.
   
 Link SQL Completo:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/src/sql/users/user.sql
 
 ## Triggers y Procedimientos Almacenados
 
 ### Triggers
-- **actualizar_clasificacion**: Actualiza automáticamente la clasificación de los pilotos.
+- **actualizar_clasificacion: Actualiza automáticamente la clasificación de los pilotos**.Se han implementado triggers para automatizar ciertas operaciones en la base de datos. Por ejemplo, el trigger `actualizar_clasificacion` se ejecuta automáticamente después de insertar un nuevo resultado en la tabla `results`, actualizando la tabla `drivers` con los puntos obtenidos en la nueva carrera.
+  
 ```sql
 DELIMITER //
 
@@ -193,7 +262,7 @@ DELIMITER ;
 ```
 
 ### Procedimientos Almacenados
-- **update_driver_info**: Actualiza la información de los pilotos.
+- **update_driver_info: Actualiza la información de los pilotos**. El procedimiento almacenado `update_driver_info` permite actualizar la información de los pilotos en la tabla `drivers`. Este procedimiento puede actualizar la nacionalidad, el número, el nombre y el apellido de un piloto específico.
 ```sql
 DROP PROCEDURE IF EXISTS update_driver_info;
 
@@ -239,6 +308,8 @@ Link SQL Completo:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/
 
 ## Funciones SQL
 
+La función `average_points_per_driverid` calcula el promedio de puntos por piloto. Esta función es útil para analizar el rendimiento de los pilotos a lo largo del tiempo.
+
 ### average_points_per_driverid
 ```sql
 USE Formula1DB;
@@ -265,7 +336,7 @@ Link SQL Completo:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/
 
 ## Conexión a la Base de Datos MySQL desde Google Colab
 
-Para conectar Google Colab a la base de datos MySQL, se utiliza la biblioteca `mysql-connector-python`.
+Para realizar consultas y visualizaciones en Google Colab, se ha utilizado la biblioteca `mysql-connector-python`. A continuación se muestra un ejemplo de cómo conectar Google Colab a MySQL:
 
 ```python
 import mysql.connector
@@ -407,9 +478,11 @@ plt.grid(True)
 plt.show()
 ```
 
-## Visualizáciones
+### Generación de Gráficos y Visualizaciones
 
-En este repositorio se presentan algunas de las visualizaciones generadas utilizando Google Colab. Estas imágenes ilustran los resultados y análisis realizados en el marco de este proyecto, ofreciendo una representación gráfica de los datos y hallazgos clave.
+En el notebook `MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb`, se han generado gráficos y visualizaciones clave para identificar patrones y tendencias en los datos de la Fórmula 1. Estas visualizaciones ayudan a comprender mejor los factores que influyen en el rendimiento de los pilotos y los equipos.
+
+Link del Notebook:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/notebooks/MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb
 
 ![numero drivers nacionalidades](https://drive.google.com/uc?export=view&id=1p7BYtj12d8kxQv5HctXdkLM4HO99YnWO)
 

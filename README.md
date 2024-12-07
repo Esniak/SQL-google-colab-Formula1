@@ -1,5 +1,7 @@
 # Proyecto Fórmula 1
 
+## Introducción
+
 El objetivo principal de este proyecto es crear una base de datos MySQL que pueda ser utilizada en Google Colab para realizar consultas y generar gráficos informativos.
 
 La integración con Google Colab permite realizar consultas SQL avanzadas, lo que facilita la comprensión de la información mediante visualizaciones gráficas, especialmente útil para personas que no están familiarizadas con el entorno técnico de SQL.
@@ -11,6 +13,152 @@ El proyecto incluye la gestión de usuarios y permisos, la implementación de tr
 ## Descripción General del Proyecto
 
 Este proyecto tiene como objetivo principal desarrollar una base de datos MySQL para almacenar y analizar datos históricos de la Fórmula 1. La base de datos está diseñada para integrarse con Google Colab, permitiendo realizar consultas avanzadas y generar visualizaciones informativas. La estructura del proyecto es modular y escalable, optimizada para entornos empresariales y colaboración en equipos.
+
+## Estructura del Proyecto
+
+```
+Proyecto_Formula1/
+├── README.md               # Introducción al proyecto
+├── LICENSE                 # Licencia del proyecto
+├── src/
+│   ├── config/
+│   │   └── config.yaml      # Configuración segura del entorno
+│   ├── sql/                 # Scripts SQL
+│   │   ├── schema/          # Definición del esquema de la base de datos
+│   │   ├── procedures/      # Procedimientos almacenados
+│   │   ├── triggers/        # Triggers definidos
+│   │   ├── functions/       # Funciones SQL
+│   │   ├── logs/            # Registro de cambios y operaciones
+│   │   └── users/           # Gestión de usuarios
+│   └── main.py              # Script principal del proyecto
+├── notebooks/
+│   └── análisis_datos.ipynb # Notebook para análisis y visualización
+├── tests/
+│   ├── sql_tests/           # Pruebas para consultas SQL
+│   └── python_tests/        # Pruebas unitarias para scripts Python
+├── docs/
+│   ├── arquitectura.md      # Documentación de la arquitectura del proyecto
+│   ├── uso.md               # Instrucciones de uso del proyecto
+│   └── contribución.md      # Guía para contribuidores
+├── scripts/
+│   ├── setup.sh             # Script de configuración del entorno
+│   └── deploy.sh            # Script de despliegue
+├── data/
+│   ├── raw/                 # Datos originales en formato CSV
+│   │   ├── Circuits.csv
+│   │   ├── Constructors.csv
+│   │   ├── Drivers.csv
+│   │   ├── Races.csv
+│   │   ├── Results.csv
+└── .gitignore               # Exclusiones para el repositorio Git
+```
+
+## Gestión de Usuarios y Permisos
+
+La gestión de usuarios y permisos es fundamental para garantizar la seguridad y el control de acceso en la base de datos. En este proyecto, se han definido tres tipos de usuarios con diferentes niveles de permisos:
+
+1. **manager_user**: Tiene permisos completos para realizar cualquier operación en la base de datos.
+2. **employee_user**: Tiene permisos limitados para insertar datos en la base de datos.
+3. **analyst_user**: Tiene permisos para insertar datos y crear tablas temporales.
+
+## Triggers, Procedimientos Almacenados y Funciones SQL
+
+### Triggers
+
+Se han implementado triggers para automatizar ciertas operaciones en la base de datos. Por ejemplo, el trigger `actualizar_clasificacion` se ejecuta automáticamente después de insertar un nuevo resultado en la tabla `results`, actualizando la tabla `drivers` con los puntos obtenidos en la nueva carrera.
+
+### Procedimientos Almacenados
+
+El procedimiento almacenado `update_driver_info` permite actualizar la información de los pilotos en la tabla `drivers`. Este procedimiento puede actualizar la nacionalidad, el número, el nombre y el apellido de un piloto específico.
+
+### Funciones SQL
+
+La función `average_points_per_driverid` calcula el promedio de puntos por piloto. Esta función es útil para analizar el rendimiento de los pilotos a lo largo del tiempo.
+
+## Diagrama ER
+
+El diagrama ER (Entidad-Relación) proporciona una visualización clara de las relaciones entre las tablas de la base de datos. Puedes encontrar el diagrama ER en el siguiente enlace: [Diagrama ER](https://github.com/user-attachments/assets/c90f9e0f-ff6a-452f-a85c-3478a69b0a61)
+
+## Análisis y Visualización
+
+### Conexión a MySQL desde Google Colab
+
+Para realizar consultas y visualizaciones en Google Colab, se ha utilizado la biblioteca `mysql-connector-python`. A continuación se muestra un ejemplo de cómo conectar Google Colab a MySQL:
+
+```python
+import mysql.connector
+from dotenv import load_dotenv
+import os
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
+
+# Configuración de la conexión
+config = {
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'host': os.getenv('DB_HOST'),
+    'database': os.getenv('DB_NAME')
+}
+
+# Establecer la conexión
+conn = mysql.connector.connect(**config)
+cursor = conn.cursor()
+
+# Ejemplo de consulta
+query = "SELECT * FROM nombre_tabla"
+cursor.execute(query)
+
+# Obtener resultados
+results = cursor.fetchall()
+for row in results:
+    print(row)
+
+# Cerrar la conexión
+cursor.close()
+conn.close()
+```
+
+### Consultas SQL Avanzadas
+
+Se han utilizado consultas SQL avanzadas como `SELECT`, `GROUP BY` y `JOIN` para analizar los datos de la Fórmula 1. Estas consultas permiten obtener información detallada sobre el rendimiento de los pilotos y los equipos.
+
+### Generación de Gráficos y Visualizaciones
+
+En el notebook `MySQL_database_access_Kaabil_Sekali_proyecto_formula_1.ipynb`, se han generado gráficos y visualizaciones clave para identificar patrones y tendencias en los datos de la Fórmula 1. Estas visualizaciones ayudan a comprender mejor los factores que influyen en el rendimiento de los pilotos y los equipos.
+
+## Resumen del Proyecto
+
+### Diseño y Creación de la Base de Datos
+
+La base de datos se ha diseñado y creado en MySQL, utilizando MySQL Workbench para definir el esquema y las relaciones entre las tablas. Se han implementado triggers, procedimientos almacenados y funciones SQL para optimizar la manipulación y el análisis de datos.
+
+### Integración con Google Colab
+
+La integración con Google Colab permite realizar consultas avanzadas y generar visualizaciones informativas. Esta integración facilita el análisis de datos y la generación de insights clave sobre el rendimiento de los pilotos y los equipos.
+
+### Insights Clave Obtenidos
+
+A través del análisis de datos, se han obtenido insights clave sobre los factores que influyen en el rendimiento de los pilotos y los equipos. Estos insights pueden ser utilizados para mejorar las estrategias de carrera y optimizar el rendimiento en futuras competiciones.
+
+## Contenido Adicional
+
+### Código SQL
+
+El código SQL para la creación de tablas, triggers, procedimientos almacenados y funciones relevantes se encuentra en la carpeta `src/sql/`. Este código incluye:
+
+- **Tablas**: Definición del esquema de la base de datos.
+- **Triggers**: Automatización de operaciones en la base de datos.
+- **Procedimientos Almacenados**: Funciones para actualizar datos en la base de datos.
+- **Funciones SQL**: Cálculo de promedios y otras métricas.
+
+### Enlace al Google Colab
+
+Puedes acceder al proyecto en Google Colab y ver las visualizaciones generadas en el siguiente enlace: [Google Colab](https://colab.research.google.com/drive/1a2b3c4d5e6f7g8h9i0j)
+
+## Consideraciones Finales
+
+Este proyecto resalta cómo la combinación de herramientas como MySQL y Google Colab puede proporcionar insights profundos, demostrando su utilidad para investigaciones futuras y aplicaciones en otros dominios. La estructura modular y escalable del proyecto permite su adaptación a diferentes contextos y necesidades, facilitando la colaboración en equipos y la integración en entornos empresariales.
 
 ## Instrucciones para Configurar y Ejecutar el Proyecto Localmente
 

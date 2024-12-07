@@ -1,17 +1,11 @@
 # Proyecto Fórmula 1
+![Resumen del proyecto](https://drive.google.com/uc?export=view&id=1NjT6rSiszViQozX85aNBhXVKHaHCfA-a)
 
-El objetivo principal de este proyecto es crear una base de datos MySQL que pueda ser utilizada en Google Colab para realizar consultas y generar gráficos informativos.
+![Descripción de la imagen](https://drive.google.com/uc?export=view&id=1vsStXdwZCNa4WJsrm3-ifOIvt0Q99Oj2)
 
-La integración con Google Colab permite realizar consultas SQL avanzadas, lo que facilita la comprensión de la información mediante visualizaciones gráficas, especialmente útil para personas que no están familiarizadas con el entorno técnico de SQL.
-
-El proyecto incluye la gestión de usuarios y permisos, la implementación de triggers, y procedimientos almacenados, así como funciones SQL para optimizar la manipulación y análisis de datos. Además, se ha diseñado un diagrama ER para estructurar y visualizar la base de datos de manera efectiva. Este enfoque no solo mejora el análisis del rendimiento histórico de la Fórmula 1, sino que también establece una base sólida para futuras investigaciones y aplicaciones en otros campos.
-
-![eer readme github formula1](https://github.com/user-attachments/assets/c90f9e0f-ff6a-452f-a85c-3478a69b0a61)
-
-## Descripción General del Proyecto
-
-Este proyecto tiene como objetivo principal desarrollar una base de datos MySQL para almacenar y analizar datos históricos de la Fórmula 1. La base de datos está diseñada para integrarse con Google Colab, permitiendo realizar consultas avanzadas y generar visualizaciones informativas. La estructura del proyecto es modular y escalable, optimizada para entornos empresariales y colaboración en equipos.
-
+### 1. Diseño y Creación - Base de Datos MySQL
+- Descripción del diseño y estructuración de una base de datos MySQL optimizada para almacenar y gestionar eficientemente la información necesaria para el análisis.
+- 
 ## Tablas del Proyecto
 
 ### circuits
@@ -133,12 +127,20 @@ CREATE TABLE users (
 ```
 - Filas insertadas: 3
 
+## Diagrama de Entidad-Relación (ERD)
+
+El diagrama ER muestra las relaciones entre las tablas de la base de datos. Incluye las tablas `circuits`, `constructors`, `drivers`, `races`, `results`, `results_log`, y `users`.
+
+![eer readme github formula1](https://github.com/user-attachments/assets/c90f9e0f-ff6a-452f-a85c-3478a69b0a61)
+
 ## Gestión de Usuarios y Permisos
 
 ### Usuarios
 - `manager_user`: Permisos completos.
 - `employee_user`: Permisos de inserción.
 - `analyst_user`: Permisos de inserción y creación de tablas temporales.
+  
+Link SQL Completo:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/src/sql/users/user.sql
 
 ## Triggers y Procedimientos Almacenados
 
@@ -233,6 +235,8 @@ END//
 DELIMITER ;
 ```
 
+Link SQL Completo:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/src/sql/procedures/Store%20Procedure.sql
+
 ## Funciones SQL
 
 ### average_points_per_driverid
@@ -257,35 +261,7 @@ END //
 
 DELIMITER ;
 ```
-
-### Ejemplos Prácticos
-```sql
-SELECT driverId, average_points(driverId) AS avg_points
-FROM drivers
-WHERE driverId = 1;
-
-SELECT driverId, average_points(driverId)
-FROM drivers
-LIMIT 10;
-
-SELECT driverId, average_points(driverId)
-FROM drivers
-WHERE driverId IN (1, 12, 39, 48, 127);
-
-SELECT driverId, average_points(driverId)
-FROM drivers
-WHERE nationality = 'British'
-LIMIT 10;
-
-SELECT driverId, average_points(driverId) AS avg_points
-FROM drivers
-ORDER BY avg_points DESC
-LIMIT 10;
-```
-
-## Diagrama de Entidad-Relación (ERD)
-
-El diagrama ER muestra las relaciones entre las tablas de la base de datos. Incluye las tablas `circuits`, `constructors`, `drivers`, `races`, `results`, `results_log`, y `users`.
+Link SQL Completo:https://github.com/Esniak/SQL-google-colab-Formula1/blob/main/src/sql/functions/Function.sql
 
 ## Conexión a la Base de Datos MySQL desde Google Colab
 
@@ -318,12 +294,131 @@ for row in results:
 cursor.close()
 conn.close()
 ```
+### Ejemplos Prácticos
 
-## Resumen del Proyecto
+```sql
+# Obtener constructores que no han ganado ninguna carrera, limitado a 20 resultados
 
-- Diseño y creación de la base de datos MySQL.
-- Integración con Google Colab para análisis y visualización.
-- Principales hallazgos identificados durante el análisis.
+SELECT constructorId, name
+FROM constructors
+EXCEPT
+SELECT DISTINCT constructors.constructorId, constructors.name
+FROM constructors
+JOIN results ON constructors.constructorId = results.constructorId
+WHERE results.positionOrder = 1
+LIMIT 20;
+
+cursor.execute(query1)
+constructors_no_wins = cursor.fetchall()
+print("Constructores sin victorias (limitado a 20 resultados):")
+for row in constructors_no_wins:
+    print(row)
+
+# contar el número de circuitos en los que participaron pilotos en el año 2009, agrupados y ordenados por nombre del piloto.
+
+SELECT d.forename, COUNT(c.circuitId) as number_of_circuits
+FROM drivers d
+JOIN results r ON d.driverId = r.driverId
+JOIN races ra ON r.raceId = ra.raceId
+JOIN circuits c ON ra.circuitId = c.circuitId
+WHERE ra.year = 2009
+GROUP BY d.forename
+ORDER BY d.forename;
+
+driver_circuits_df = pd.read_sql(query, conn)
+
+# Verificar los resultados
+print(driver_circuits_df)
+
+# Consulta SQL ajustada para obtener el rendimiento de los pilotos  desde el año 2010 al 2017
+
+SELECT d.forename, d.surname, ra.year, SUM(r.points) AS total_points
+FROM results r
+JOIN drivers d ON r.driverId = d.driverId
+JOIN races ra ON r.raceId = ra.raceId
+GROUP BY d.driverId, d.forename, d.surname, ra.year
+ORDER BY total_points DESC, ra.year
+LIMIT 20;
+
+# Ejecutar la consulta y cargar los resultados en un DataFrame
+cursor.execute(query_yearly_performance)
+rows_yearly_performance = cursor.fetchall()
+
+# Convertir los resultados a un DataFrame de pandas
+yearly_performance_df = pd.DataFrame(rows_yearly_performance, columns=['forename', 'surname', 'year', 'total_points'])
+
+# Mantener solo un registro por año en orden cronológico y de puntos
+yearly_performance_df = yearly_performance_df.sort_values(by=['year', 'total_points'], ascending=[True, False])
+yearly_performance_df = yearly_performance_df.drop_duplicates(subset=['year'], keep='first').head(10)
+
+# Gráfico de barras
+plt.figure(figsize=(10, 6))
+plt.barh(yearly_performance_df['forename'] + ' ' + yearly_performance_df['surname'] + ' (' + yearly_performance_df['year'].astype(str) + ')', yearly_performance_df['total_points'], color='skyblue')
+plt.xlabel('Total Points')
+plt.ylabel('Driver (Year)')
+plt.title('Top 8 Driver Performances by Year 2010--2017')
+plt.gca().invert_yaxis()
+plt.show()
+
+Consulta SQL para obtener el total de carreras por país.
+
+# Consulta SQL para obtener el número de victorias por equipo
+
+SELECT constructors.name, COUNT(results.positionOrder) as wins
+FROM results
+JOIN constructors ON results.constructorId = constructors.constructorId
+WHERE results.positionOrder = 1
+GROUP BY constructors.name
+ORDER BY wins DESC
+
+df = pd.read_sql(query, conn)
+
+# Crear un gráfico de barras
+plt.figure(figsize=(12, 6))
+plt.bar(df['name'], df['wins'], color='skyblue')
+plt.xlabel('Equipo')
+plt.ylabel('Número de Victorias')
+plt.title('Número de Victorias por Equipo')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+plt.show()
+
+Consulta SQL para obtener puntos de constructores por temporada.
+
+# Consulta SQL para obtener el número de victorias por equipo
+
+SELECT constructors.name, COUNT(results.positionOrder) as wins
+FROM results
+JOIN constructors ON results.constructorId = constructors.constructorId
+WHERE results.positionOrder = 1
+GROUP BY constructors.name
+ORDER BY wins DESC
+
+df = pd.read_sql(query, conn)
+
+# Crear un gráfico de barras
+plt.figure(figsize=(12, 6))
+plt.bar(df['name'], df['wins'], color='skyblue')
+plt.xlabel('Equipo')
+plt.ylabel('Número de Victorias')
+plt.title('Número de Victorias por Equipo')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+plt.show()
+```
+
+## Visualizáciones
+
+En este repositorio se presentan algunas de las visualizaciones generadas utilizando Google Colab. Estas imágenes ilustran los resultados y análisis realizados en el marco de este proyecto, ofreciendo una representación gráfica de los datos y hallazgos clave.
+
+![numero drivers nacionalidades](https://drive.google.com/uc?export=view&id=1p7BYtj12d8kxQv5HctXdkLM4HO99YnWO)
+
+![mapa tarta](https://drive.google.com/uc?export=view&id=1q4IGUlL2WhdhCenL7N-z2sk3MzvpkIck)
+
+![Correlacion](https://drive.google.com/uc?export=view&id=1ptWdCI0b2sjTqGG5LT32ze12B41S7qRN)
+
+A continuación, se muestran algunas de las visualizaciones destacadas:
+
 
 ## Instrucciones para Configurar y Ejecutar el Proyecto Localmente
 
